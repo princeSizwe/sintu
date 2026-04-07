@@ -1,6 +1,6 @@
 # Sintu (Chazwi) — Bantu Language Dictionary
 
-A full-stack dictionary and community platform for Bantu languages (Zulu, Sotho, Xhosa), featuring word comparison, a community feed, prediction rounds, and subscription payments via PayFast.
+A full-stack dictionary and community platform for Bantu languages (Zulu, Sotho, Xhosa, Tswana,Tsonga, Venda0), featuring word comparison, a community feed, prediction rounds, and subscription payments via PayFast.
 
 ## Tech Stack
 
