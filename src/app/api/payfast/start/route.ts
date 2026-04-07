@@ -7,8 +7,8 @@ export async function POST() {
 
   const isSandbox = process.env.PAYFAST_MODE === "sandbox";
   const merchantId = process.env.PAYFAST_MERCHANT_ID || "10000100";
-  const merchantKey = process.env.PAYFAST_MERCHANT_KEY || "46f0cd694581a";
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  // TODO: include PAYFAST_MERCHANT_KEY in the MD5 signature when building the form payload
 
   const payfastUrl = isSandbox
     ? "https://sandbox.payfast.co.za/eng/process"
