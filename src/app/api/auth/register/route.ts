@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, createToken, COOKIE_NAME } from "@/lib/auth";
+import { hashPassword, generateVerificationToken, tokenExpiresAt } from "@/lib/auth";
+import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   const { email, name, password } = await req.json();
@@ -16,17 +17,28 @@ export async function POST(req: NextRequest) {
   const adminEmail = process.env.ADMIN_EMAIL;
   const role = adminEmail && email === adminEmail ? "ADMIN" : "USER";
 
-  const user = await prisma.user.create({
+  const { token, tokenHash } = generateVerificationToken();
+  const expiresAt = tokenExpiresAt(24);
+
+  await prisma.user.create({
     data: {
       email,
       name: name || null,
       passwordHash: await hashPassword(password),
       role,
+      emailVerificationTokenHash: tokenHash,
+      emailVerificationTokenExpiresAt: expiresAt,
     },
   });
 
-  const token = createToken({ id: user.id, email: user.email, role: user.role });
-  const res = NextResponse.json({ ok: true });
-  res.cookies.set(COOKIE_NAME, token, { httpOnly: true, maxAge: 60 * 60 * 24 * 7, path: "/" });
-  return res;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const verificationUrl = `${appUrl}/api/auth/verify?token=${token}`;
+
+  await sendVerificationEmail(email, verificationUrl);
+
+  return NextResponse.json(
+    { ok: true, message: "Registration successful. Please check your email to verify your account." },
+    { status: 201 }
+  );
 }
+

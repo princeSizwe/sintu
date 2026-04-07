@@ -13,8 +13,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
   }
 
+  if (!user.emailVerifiedAt) {
+    return NextResponse.json(
+      { error: "Email not verified. Please check your inbox and verify your email before logging in." },
+      { status: 403 }
+    );
+  }
+
   const token = createToken({ id: user.id, email: user.email, role: user.role });
   const res = NextResponse.json({ ok: true });
   res.cookies.set(COOKIE_NAME, token, { httpOnly: true, maxAge: 60 * 60 * 24 * 7, path: "/" });
   return res;
 }
+

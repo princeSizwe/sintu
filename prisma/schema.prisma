@@ -26,16 +26,19 @@ enum SubscriptionStatus {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  email        String        @unique
-  passwordHash String
-  name         String?
-  role         Role          @default(USER)
-  createdAt    DateTime      @default(now())
-  posts        Post[]
-  predictions  Prediction[]
-  subscription Subscription?
-  payouts      PayoutLedger[]
+  id                               String        @id @default(cuid())
+  email                            String        @unique
+  passwordHash                     String
+  name                             String?
+  role                             Role          @default(USER)
+  createdAt                        DateTime      @default(now())
+  emailVerifiedAt                  DateTime?
+  emailVerificationTokenHash       String?
+  emailVerificationTokenExpiresAt  DateTime?
+  posts                            Post[]
+  predictions                      Prediction[]
+  subscription                     Subscription?
+  payouts                          PayoutLedger[]
 }
 
 model Language {
