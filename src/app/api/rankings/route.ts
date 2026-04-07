@@ -35,8 +35,10 @@ export async function GET(req: NextRequest) {
     include: { language: true },
   });
 
+  const entryMap = new Map(entries.map((e) => [e.id, e]));
+
   const ranked = sortedIds.map((id) => ({
-    entry: entries.find((e) => e.id === id),
+    entry: entryMap.get(id),
     score: scores[id],
   })).filter((r) => r.entry);
 

@@ -2,7 +2,14 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
+const JWT_SECRET_VALUE = process.env.JWT_SECRET || "dev-secret-change-me";
+
+function getJwtSecret(): string {
+  if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET environment variable is required in production");
+  }
+  return JWT_SECRET_VALUE;
+}
 const COOKIE_NAME = "sintu_session";
 
 export interface SessionUser {
@@ -20,12 +27,12 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 }
 
 export function createToken(user: SessionUser): string {
-  return jwt.sign(user, JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign(user, getJwtSecret(), { expiresIn: "7d" });
 }
 
 export function verifyToken(token: string): SessionUser | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as SessionUser;
+    return jwt.verify(token, getJwtSecret()) as SessionUser;
   } catch {
     return null;
   }
