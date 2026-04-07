@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import crypto from "crypto";
 
 function getJwtSecret(): string {
   const secret = process.env.JWT_SECRET;
@@ -60,3 +61,21 @@ export async function requireAdmin(): Promise<SessionUser> {
 }
 
 export { COOKIE_NAME };
+
+/** Generate a high-entropy verification token and return both the raw token and its SHA-256 hash. */
+export function generateVerificationToken(): { token: string; tokenHash: string } {
+  const token = crypto.randomBytes(32).toString("hex");
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  return { token, tokenHash };
+}
+
+/** Hash a raw verification token for storage/lookup. */
+export function hashVerificationToken(token: string): string {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
+/** Returns a Date that is `hours` hours from now. */
+export function tokenExpiresAt(hours = 24): Date {
+  return new Date(Date.now() + hours * 60 * 60 * 1000);
+}
+
