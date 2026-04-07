@@ -4,8 +4,11 @@ import { cookies } from "next/headers";
 
 function getJwtSecret(): string {
   const secret = process.env.JWT_SECRET;
-  if (process.env.NODE_ENV === "production" && !secret) {
-    throw new Error("JWT_SECRET environment variable is required in production");
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("JWT_SECRET environment variable is required in production");
+    }
+    console.warn("[auth] JWT_SECRET is not set — using insecure fallback for development only");
   }
   return secret || "dev-secret-change-me";
 }
