@@ -2,13 +2,12 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 
-const JWT_SECRET_VALUE = process.env.JWT_SECRET || "dev-secret-change-me";
-
 function getJwtSecret(): string {
-  if (process.env.NODE_ENV === "production" && !process.env.JWT_SECRET) {
+  const secret = process.env.JWT_SECRET;
+  if (process.env.NODE_ENV === "production" && !secret) {
     throw new Error("JWT_SECRET environment variable is required in production");
   }
-  return JWT_SECRET_VALUE;
+  return secret || "dev-secret-change-me";
 }
 const COOKIE_NAME = "sintu_session";
 

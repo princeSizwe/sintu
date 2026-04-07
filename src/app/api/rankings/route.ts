@@ -37,10 +37,9 @@ export async function GET(req: NextRequest) {
 
   const entryMap = new Map(entries.map((e) => [e.id, e]));
 
-  const ranked = sortedIds.map((id) => ({
-    entry: entryMap.get(id),
-    score: scores[id],
-  })).filter((r) => r.entry);
+  const ranked = sortedIds
+    .map((id) => ({ entry: entryMap.get(id), score: scores[id] }))
+    .filter((r): r is { entry: NonNullable<typeof r.entry>; score: number } => r.entry != null);
 
   return NextResponse.json(ranked);
 }
