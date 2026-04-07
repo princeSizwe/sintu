@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       email,
       name: name || null,
       passwordHash: await hashPassword(password),
-      role: role as "ADMIN" | "USER",
+      role,
     },
   });
 

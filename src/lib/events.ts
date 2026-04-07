@@ -1,7 +1,7 @@
 import { prisma } from "./prisma";
 import { EventType } from "@prisma/client";
 
-const WEIGHTS: Record<EventType, number> = {
+export const WEIGHTS: Record<EventType, number> = {
   SEARCH: 1,
   VIEW: 2,
   COMPARE: 3,

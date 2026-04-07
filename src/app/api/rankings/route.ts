@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-
-const WEIGHTS: Record<string, number> = { SEARCH: 1, VIEW: 2, COMPARE: 3, POST_MENTION: 4 };
+import { WEIGHTS } from "@/lib/events";
 
 export async function GET(req: NextRequest) {
   const period = req.nextUrl.searchParams.get("period") || "week";
