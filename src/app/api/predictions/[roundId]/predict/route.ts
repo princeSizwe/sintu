@@ -18,7 +18,13 @@ export async function POST(
       data: { roundId, userId: session.id, value },
     });
     return NextResponse.json(prediction, { status: 201 });
-  } catch {
-    return NextResponse.json({ error: "Already predicted or round not found" }, { status: 409 });
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      err.message.includes("Unique constraint failed")
+    ) {
+      return NextResponse.json({ error: "You have already submitted a prediction for this round" }, { status: 409 });
+    }
+    return NextResponse.json({ error: "Prediction round not found" }, { status: 404 });
   }
 }

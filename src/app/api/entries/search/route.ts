@@ -15,9 +15,7 @@ export async function GET(req: NextRequest) {
     take: 20,
   });
 
-  for (const entry of entries) {
-    await trackEvent(entry.id, "SEARCH").catch(() => {});
-  }
+  await Promise.all(entries.map((entry) => trackEvent(entry.id, "SEARCH").catch(() => {})));
 
   return NextResponse.json(entries);
 }

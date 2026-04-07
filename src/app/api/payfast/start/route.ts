@@ -18,7 +18,6 @@ export async function POST() {
     url: payfastUrl,
     sandbox: isSandbox,
     merchantId,
-    merchantKey,
     returnUrl: `${appUrl}/me/payouts`,
     cancelUrl: `${appUrl}/pricing`,
     notifyUrl: `${appUrl}/api/payfast/itn`,
