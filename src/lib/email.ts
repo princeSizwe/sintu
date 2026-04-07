@@ -16,7 +16,12 @@ function createTransporter() {
     return null;
   }
 
-  return { transporter: nodemailer.createTransport({ host, port, auth: { user, pass } }), from };
+  // Use secure (TLS) for port 465; use STARTTLS (requireTLS) for all other ports (e.g. 587)
+  const secure = port === 465;
+  return {
+    transporter: nodemailer.createTransport({ host, port, secure, requireTLS: !secure, auth: { user, pass } }),
+    from,
+  };
 }
 
 export async function sendVerificationEmail(to: string, verificationUrl: string): Promise<void> {

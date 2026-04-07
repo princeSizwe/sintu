@@ -27,8 +27,11 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const verificationUrl = `${appUrl}/api/auth/verify?token=${token}`;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!appUrl && process.env.NODE_ENV === "production") {
+    throw new Error("NEXT_PUBLIC_APP_URL is required in production");
+  }
+  const verificationUrl = `${appUrl ?? "http://localhost:3000"}/api/auth/verify?token=${token}`;
 
   await sendVerificationEmail(email, verificationUrl);
 
